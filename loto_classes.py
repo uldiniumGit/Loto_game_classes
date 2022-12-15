@@ -54,74 +54,74 @@ class Card:
                 self.line += '\n'
 
 
+# Основной класс для игры
 class Game:
     user_card = None
     computer_card = None
 
-    kegs = list(range(1, 90))
+    # Лист с фишками
+    kegs = list(range(1, 91))
     shuffle(kegs)
-    game_over = False
 
+    # Создаем объекты ранее написанного класса Card
     def __init__(self):
         self.user_card = Card()
 
         self.computer_card = Card()
 
+    # Функция, проводящая один раунд игры
     def play_round(self):
-        """
-        :return:
-        0 - game must go on
-        1 - user wins
-        2 - computer wins
-        """
 
+        # Достаем фишку из листа
         keg = str(self.kegs.pop())
+        # Добавляем нолик для красивого отображения в терминале
         if len(str(keg)) < 2:
             keg = '0' + keg
+
+        # Выводим в терминал фишку и карточки игроков
         print(f'Новая фишка: {keg} (осталось {len(self.kegs)})\n')
         print(f'Ваша карточка:\n{self.user_card.line}\n')
         print(f'Карточка компьютера:\n{self.computer_card.line}\n')
 
+        # Действие игрока
         user_answer = input('Зачеркнуть цифру? (да/нет)\n').lower()
+
+        # Проверяем не ошибся ли игрок. Если ошибся, он проигрывает
         if user_answer == 'да' and keg not in self.user_card.line or user_answer != 'да' and keg in self.user_card.line:
             return 3
 
+        # Если в раунде ничья
         if keg in self.user_card.line and keg in self.computer_card.line:
             self.user_card.line = self.user_card.line.replace(keg, keg[0] + '̶' + keg[1] + '̶')
             self.computer_card.line = self.computer_card.line.replace(keg, keg[0] + '̶' + keg[1] + '̶')
             return 4
 
+        # Если в раунде победил игрок
         if keg in self.user_card.line:
             self.user_card.line = self.user_card.line.replace(keg, keg[0] + '̶' + keg[1] + '̶')
             return 1
 
+        # Если в раунде победил бот
         if keg in self.computer_card.line:
             self.computer_card.line = self.computer_card.line.replace(keg, keg[0] + '̶' + keg[1] + '̶')
             return 2
 
+        # Если в раунде ничего не произошло
         return 0
 
 
-'''
-'''
-
-
+# Наследованием создаем класс для игры компьютера против компьютера
 class GameCompVsComp(Game):
 
     def __init__(self):
         Game.__init__(self)
 
     def play_round(self):
-        """
-        :return:
-        0 - game must go on
-        1 - computer 1 wins
-        2 - computer 2 wins
-        """
 
         keg = str(self.kegs.pop())
         if len(str(keg)) < 2:
             keg = '0' + keg
+
         print(f'Новая фишка: {keg} (осталось {len(self.kegs)})\n')
         print(f'Карточка бота 1:\n{self.user_card.line}\n')
         print(f'Карточка бота 2:\n{self.computer_card.line}\n')
@@ -142,45 +142,58 @@ class GameCompVsComp(Game):
         return 0
 
 
-class GamePVP(Game):
+# Создал новый класс для игры человек против человека с возможностью выбора кол-ва участников
+class PvPGame:
+    # Лист для карт всех участников
+    card_list = []
 
-    def __init__(self):
-        Game.__init__(self)
+    # Лист с фишками
+    kegs = list(range(1, 91))
+    shuffle(kegs)
 
-    def play_round(self):
-        """
-        :return:
-        0 - game must go on
-        1 - user 1 wins
-        2 - user 2 wins
-        """
+    def __init__(self, players):
 
-        keg = str(self.kegs.pop())
-        if len(str(keg)) < 2:
-            keg = '0' + keg
-        print(f'Новая фишка: {keg} (осталось {len(self.kegs)})\n')
-        print(f'Карточка игрока 1:\n{self.user_card.line}\n')
-        print(f'Карточка игрока 2:\n{self.computer_card.line}\n')
+        # Заполняем лист с картами в зависимости от кол-ва участников
+        for i in range(players):
+            player_card = Card()
+            self.card_list.append(player_card)
 
-        user01_answer = input('Ход игрока 1. Зачеркнуть цифру? (да/нет)\n').lower()
-        if user01_answer == 'да' and keg not in self.user_card.line or user01_answer != 'да' and keg in self.user_card.line:
-            return 3
+    # Вывод карт в терминал
+    def show_cards(self, players):
 
-        user02_answer = input('Ход игрока 2. Зачеркнуть цифру? (да/нет)\n').lower()
-        if user02_answer == 'да' and keg not in self.computer_card.line or user02_answer != 'да' and keg in self.computer_card.line:
-            return 3
+        for i in range(players):
+            print(f'Карточка игрока {i + 1}:\n{self.card_list[i].line}\n')
 
-        if keg in self.user_card.line and keg in self.computer_card.line:
-            self.user_card.line = self.user_card.line.replace(keg, keg[0] + '̶' + keg[1] + '̶')
-            self.computer_card.line = self.computer_card.line.replace(keg, keg[0] + '̶' + keg[1] + '̶')
-            return 4
+    # Функция, проводящая один раунд игры
+    def play_game(self, players):
 
-        if keg in self.user_card.line:
-            self.user_card.line = self.user_card.line.replace(keg, keg[0] + '̶' + keg[1] + '̶')
-            return 1
+        while True:
 
-        if keg in self.computer_card.line:
-            self.computer_card.line = self.computer_card.line.replace(keg, keg[0] + '̶' + keg[1] + '̶')
-            return 2
+            # Вытягиваем фишку и выводим в терминал
+            keg = str(self.kegs.pop())
+            if len(str(keg)) < 2:
+                keg = '0' + keg
 
-        return 0
+            print(f'Новая фишка: {keg} (осталось {len(self.kegs)})\n')
+
+            # Даем ход каждому игроку и проверяем ответы
+            for i in range(players):
+                # Спрашиваем ответ
+                user_answer = input(f'Ход игрока {i + 1}. Зачеркнуть цифру? (да/нет)\n')
+                # Проверяем ответ
+                if user_answer == 'да' and keg not in self.card_list[i].line or user_answer != 'да' \
+                        and keg in self.card_list[i].line:
+                    # Если ответ неверный
+                    return 'you_lost'
+
+            # Зачеркиваем выбывшие цифры и создаем лист с номерами игроков, заработавших очки в этом раунде
+            for i in range(players):
+                if keg in self.card_list[i].line:
+                    self.card_list[i].line = self.card_list[i].line.replace(keg, keg[0] + '̶' + keg[1] + '̶')
+
+                    list_return = []
+
+                    list_return.append(str(i + 1))
+
+                    # Лист с номерами игроков, заработавших очки в этом раунде. Потом добавим им по одному очку.
+                    return list_return

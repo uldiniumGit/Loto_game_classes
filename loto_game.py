@@ -1,5 +1,6 @@
 from loto_classes import Game, GameCompVsComp, PvPGame
 
+
 print('')
 print('Игра лото')
 print('')

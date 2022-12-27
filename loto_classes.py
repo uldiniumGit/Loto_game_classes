@@ -16,6 +16,7 @@ class Card:
 
         # Строка, в которой хранится сама карта
         self.line = ''
+
         numbers_list = list(range(1, 90))
         shuffle(numbers_list)
 
@@ -53,6 +54,13 @@ class Card:
             if i + 1 < self.lines:
                 self.line += '\n'
 
+    def __str__(self):
+        return f'{self.line}'
+
+    def __eq__(self, other):
+        return self.lines == other.lines and self.values == other.values and \
+               self.nums_in_line == other.nums_in_line and self.empts_in_line == other.empts_in_line
+
 
 # Основной класс для игры
 class Game:
@@ -68,6 +76,12 @@ class Game:
         self.user_card = Card()
 
         self.computer_card = Card()
+
+    def __str__(self):
+        return f'карты игроков:\n{self.user_card}\n\n{self.computer_card}'
+
+    def __eq__(self, other):
+        return self.user_card == other.user_card and self.computer_card == other.computer_card
 
     # Функция, проводящая один раунд игры
     def play_round(self):
@@ -116,6 +130,12 @@ class GameCompVsComp(Game):
     def __init__(self):
         Game.__init__(self)
 
+    def __str__(self):
+        return f'карты игроков:\n{self.user_card}\n\n{self.computer_card}'
+
+    def __eq__(self, other):
+        return self.user_card == other.user_card and self.computer_card == other.computer_card
+
     def play_round(self):
 
         keg = str(self.kegs.pop())
@@ -157,6 +177,12 @@ class PvPGame:
         for i in range(players):
             player_card = Card()
             self.card_list.append(player_card)
+
+    def __str__(self):
+        return f'кол-во игроков: {len(self.card_list)}'
+
+    def __eq__(self, other):
+        return len(self.card_list) == len(other.card_list)
 
     # Вывод карт в терминал
     def show_cards(self, players):

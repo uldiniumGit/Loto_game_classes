@@ -5,48 +5,50 @@ class TestLoto:
 
     def test_card(self):
         card = Card()
-        assert card.values == 9
-        assert card.lines == 3
-        assert card.nums_in_line == 5
-        assert card.empts_in_line == 4
+        assert card.values == 9, "Ожидается 9 значений на карте"
+        assert card.lines == 3, "Ожидается 3 линии на карте"
+        assert card.nums_in_line == 5, "Ожидается 5 чисел в линии"
+        assert card.empts_in_line == 4, "Ожидается 4 пустых места в линии"
 
     def test__eq__(self):
-        card = Card()
-        card_02 = Card
-        assert card == card_02
+        card1 = Card()
+        card2 = Card()
+        assert card1 == card2, "Карты должны быть равны"
 
     def test_game(self):
         game = Game()
-        assert isinstance(game.user_card, Card)
-        assert isinstance(game.computer_card, Card)
-        assert len(game.kegs) == 90
+        assert isinstance(game.user_card, Card), "user_card должен быть экземпляром Card"
+        assert isinstance(game.computer_card, Card), "computer_card должен быть экземпляром Card"
+        assert len(game.kegs) == 90, "Должно быть 90 кеглей"
 
     def test__eq__game(self):
-        game = Game()
-        game_02 = Game()
+        game1 = Game()
+        game2 = Game()
         try:
-            game.user_card == game_02.user_card and game.computer_card == game_02.computer_card
-        except:
-            assert False
+            eq_result = (game1.user_card == game2.user_card) and (game1.computer_card == game2.computer_card)
+        except Exception:
+            assert False, "Сравнение карт вызвало исключение"
         else:
-            assert True
+            assert eq_result, "Карты в играх должны быть равны"
 
     def test_game_comp_vs_comp(self):
         game = GameCompVsComp()
-        assert isinstance(game.user_card, Card)
-        assert isinstance(game.computer_card, Card)
-        assert len(game.kegs) == 90
+        assert isinstance(game.user_card, Card), "user_card должен быть экземпляром Card"
+        assert isinstance(game.computer_card, Card), "computer_card должен быть экземпляром Card"
+        assert len(game.kegs) == 90, "Должно быть 90 кеглей"
 
     def test_game_pvp(self):
-        game = PvPGame(2)
-        assert len(game.kegs) == 90
-        assert len(game.card_list) == 2
+        players_count = 2
+        game = PvPGame(players_count)
+        assert len(game.kegs) == 90, "Должно быть 90 кеглей"
+        assert len(game.card_list) == players_count, f"Должно быть {players_count} карточек"
 
     def test_pvp__str__(self):
-        game_01 = PvPGame(3)
-        assert game_01.__str__() == 'кол-во игроков: 3'
+        players_count = 3
+        game = PvPGame(players_count)
+        assert str(game) == f'кол-во игроков: {players_count}', "Строковое представление не совпадает"
 
     def test_pvp__eq__(self):
-        game = PvPGame(3)
-        game_02 = PvPGame(3)
-        assert game == game_02
+        game1 = PvPGame(3)
+        game2 = PvPGame(3)
+        assert game1 == game2, "Игры PvP должны быть равны"
